@@ -12,7 +12,7 @@ Each user has a userID and password;
 [
 	{userid: user1, password: us123},
 	{userid: user2, password: us123},
-	{adminid: user3, password: sp987}
+	{adminid: user3, password: us123}
 
 ]
 
