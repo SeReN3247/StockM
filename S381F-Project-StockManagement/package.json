@@ -4,7 +4,7 @@
     "author": "LIN, Jiacheng",
     "version": "0.0.1",
     "engines": {
-        "node": "18.5"
+        "node": "^14.15.1"
     },
     "dependencies": {
         "cookie-session": "latest",
