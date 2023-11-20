@@ -4,7 +4,7 @@ const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
 
 const mongourl = 'mongodb+srv://KasenLin:kasenlin123@stockmanagement.otjjmtt.mongodb.net/?retryWrites=true&w=majority'; 
-const dbName = 'StockManagement';
+const dbName = '*';
 
 const express = require('express');
 const bodyParser = require('body-parser');
