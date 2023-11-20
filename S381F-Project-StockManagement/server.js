@@ -13,9 +13,9 @@ const session = require('cookie-session');
 const SECRETKEY = 'cs381';
 
 var usersinfo = new Array(
-    	{userid: user1, password: us123},
-	{userid: user2, password: us123},
-	{adminid: user3, password: sp987}
+    {name: "user1", password: "us123"},
+    {name: "user2", password: "us123"},
+    {name: "user3", password: "sp987"}
 );
 
 var documents = {};
