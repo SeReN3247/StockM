@@ -11,7 +11,7 @@
         "body-parser": "^1.18.3",
         "ejs": "*",
         "express": "*",
-        "mongodb": "StockManagement",
+        "mongodb": "*",
         "assert": "^1.4.1"
         
     },
