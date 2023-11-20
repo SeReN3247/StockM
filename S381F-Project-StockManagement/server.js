@@ -3,8 +3,8 @@ const assert = require('assert');
 const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
 
-const mongourl = 'mongodb+srv://KasenLin:Bjklsad123@stockmanagement.otjjmtt.mongodb.net/?retryWrites=true&w=majority'; 
-const dbName = 'StockManagement';
+const mongourl = ''; 
+const dbName = 'test';
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -13,9 +13,9 @@ const session = require('cookie-session');
 const SECRETKEY = 'cs381';
 
 var usersinfo = new Array(
-    	{userid: user1, password: us123},
-	{userid: user2, password: us123},
-	{adminid: user3, password: sp987}
+    {name: "user1", password: "cs381"},
+    {name: "user2", password: "cs381"},
+    {name: "user3", password: "cs381"}
 );
 
 var documents = {};
@@ -36,7 +36,7 @@ const createDocument = function(db, createddocuments, callback){
         console.log("Connected successfully to the MongoDB database server.");
         const db = client.db(dbName);
 
-        db.collection('Item').insertOne(createddocuments, function(error, results){
+        db.collection('restaurants').insertOne(createddocuments, function(error, results){
             if(error){
             	throw error
             };
@@ -47,7 +47,7 @@ const createDocument = function(db, createddocuments, callback){
 }
 
 const findDocument =  function(db, criteria, callback){
-    let cursor = db.collection('Item').find(criteria);
+    let cursor = db.collection('restaurants').find(criteria);
     console.log(`findDocument: ${JSON.stringify(criteria)}`);
     cursor.toArray(function(err, docs){
         assert.equal(err, null);
@@ -80,7 +80,7 @@ const handle_Edit = function(res, criteria) {
 
         let documentID = {};
         documentID['_id'] = ObjectID(criteria._id)
-        let cursor = db.collection('Item').find(documentID);
+        let cursor = db.collection('restaurants').find(documentID);
         cursor.toArray(function(err,docs) {
             client.close();
             assert.equal(err,null);
@@ -116,7 +116,7 @@ const updateDocument = function(criteria, updatedocument, callback){
         console.log(criteria);
 	console.log(updatedocument);
 	
-        db.collection('Item').updateOne(criteria,{
+        db.collection('restaurants').updateOne(criteria,{
                 $set: updatedocument
             }, function(err, results){
                 client.close();
@@ -129,7 +129,7 @@ const updateDocument = function(criteria, updatedocument, callback){
 
 const deleteDocument = function(db, criteria, callback){
 console.log(criteria);
-	db.collection('Item').deleteOne(criteria, function(err, results){
+	db.collection('restaurants').deleteOne(criteria, function(err, results){
 	assert.equal(err, null);
 	console.log(results);
 	return callback();
@@ -220,9 +220,9 @@ app.post('/search', function(req, res){
         const db = client.db(dbName);
     
     var searchID={};
-    searchID['itemID'] = req.body.itemID;
+    searchID['restaurantID'] = req.body.restaurantID;
     
-    if (searchID.itemID){
+    if (searchID.restaurantID){
     console.log("...Searching the document");
     findDocument(db, searchID, function(docs){
             client.close();
@@ -231,7 +231,7 @@ app.post('/search', function(req, res){
         });
     }
     else{
-    console.log("Invalid Entry - Item ID is compulsory for searching!");
+    console.log("Invalid Entry - Restaurant ID is compulsory for searching!");
     res.status(200).redirect('/find');
     }         	
 	});
@@ -257,15 +257,22 @@ app.post('/create', function(req, res){
         const db = client.db(dbName);
         
         documents["_id"] = ObjectID;        
-	documents["itemID"] = req.body.itemID;	
+	documents["restaurantID"] = req.body.restaurantID;	
 	documents['name']= req.body.name;
-	documents['manufacturer']= req.body.manufacturer;
+	documents['cuisine']= req.body.cuisine;
 	documents['phone']= req.body.number;
         documents['description']= req.body.description;
+        var addressdoc ={};
+        addressdoc['borough'] = req.body.borough;
+        if(req.body.street){
+            addressdoc['street'] = req.body.street;
+        }
+        documents['address']= addressdoc;
+        console.log("...putting data into documents");
         
         documents["ownerID"] = `${req.session.userid}`;
         
-        if(documents.itemID){
+        if(documents.restaurantID){
             console.log("...Creating the document");
             createDocument(db, documents, function(docs){
                 client.close();
@@ -275,7 +282,7 @@ app.post('/create', function(req, res){
         } else{
             client.close();
             console.log("Closed DB connection");
-            return res.status(200).render('info', {message: "Invalid entry - Item ID is compulsory!"});
+            return res.status(200).render('info', {message: "Invalid entry - Restaurant ID is compulsory!"});
         }
     });
     //client.close();
@@ -293,12 +300,19 @@ app.post('/update', function(req, res){
                 if(req.body.name){
                 updatedocument["ownerID"] = `${req.session.userid}`
                 updatedocument['name']= req.body.name;
-                updatedocument['manufacturer']= req.body.manufacturer;
+                updatedocument['cuisine']= req.body.cuisine;
                 updatedocument['phone']= req.body.number;
                 updatedocument['description']= req.body.description;
 
+                var addressdoc ={};
+                addressdoc['borough'] = req.body.borough;
+                if(req.body.street){
+                    addressdoc['street'] = req.body.street;
+                }
+                updatedocument['address'] = addressdoc;
+
         	let updateDoc = {};
-                updateDoc['itemID'] = req.body.postId;
+                updateDoc['restaurantID'] = req.body.postId;
                 console.log(updateDoc);
 
                 updateDocument(updateDoc, updatedocument, function(docs) {
@@ -309,7 +323,7 @@ app.post('/update', function(req, res){
                 })
             }
             else{
-            	return res.render('info', {message: "Invalid entry - Item name is compulsory!"});
+            	return res.render('info', {message: "Invalid entry - Restaurant name is compulsory!"});
             }
     });
     
@@ -326,8 +340,8 @@ app.get('/delete', function(req, res){
 
 //Restful
 //insert
-app.post('/api/item/itemID/:itemID', function(req,res) {
-    if (req.params.itemID) {
+app.post('/api/item/restaurantID/:restaurantID', function(req,res) {
+    if (req.params.restaurantID) {
         console.log(req.body)
         const client = new MongoClient(mongourl);
         client.connect(function(err){
@@ -335,9 +349,9 @@ app.post('/api/item/itemID/:itemID', function(req,res) {
             console.log("Connected successfully to server");
             const db = client.db(dbName);
             let newDocument = {};
-            newDocument['itemID'] = req.body.itemID;
+            newDocument['restaurantID'] = req.body.restaurantID;
 
-   	db.collection('Item').insertOne(newDocument, function(err,results){
+   	db.collection('restaurants').insertOne(newDocument, function(err,results){
                 assert.equal(err,null);
                 client.close()
                 res.status(200).end()
@@ -346,15 +360,15 @@ app.post('/api/item/itemID/:itemID', function(req,res) {
                 })
             }
         else {
-        res.status(500).json({"error": "missing item ID"});
+        res.status(500).json({"error": "missing restaurant ID"});
     }
 })
 
 //find
-app.get('/api/item/itemID/:itemID', function(req,res) {
-    if (req.params.itemID) {
+app.get('/api/item/restaurantID/:restaurantID', function(req,res) {
+    if (req.params.restaurantID) {
         let criteria = {};
-        criteria['itemID'] = req.params.itemID;
+        criteria['restaurantID'] = req.params.restaurantID;
         const client = new MongoClient(mongourl);
         client.connect(function(err) {
             assert.equal(null, err);
@@ -368,29 +382,29 @@ app.get('/api/item/itemID/:itemID', function(req,res) {
             });
         });
     } else {
-        res.status(500).json({"error": "missing item id"});
+        res.status(500).json({"error": "missing restaurant id"});
     }
 })
 
 //delete
-app.delete('/api/item/itemID/:itemID', function(req,res){
-    if (req.params.itemID) {
+app.delete('/api/item/restaurantID/:restaurantID', function(req,res){
+    if (req.params.restaurantID) {
         let criteria = {};
-        criteria['itemID'] = req.params.itemID;
+        criteria['restaurantID'] = req.params.restaurantID;
         const client = new MongoClient(mongourl);
         client.connect(function(err){
             assert.equal(null, err);
             console.log("Connected successfully to server");
             const db = client.db(dbName);
 
-            db.collection('Item').deleteMany(criteria, function(err,results) {
+            db.collection('restaurants').deleteMany(criteria, function(err,results) {
                 assert.equal(err,null)
                 client.close()
                 res.status(200).end();
             })
         });
     } else {
-        res.status(500).json({"error": "missing item id"});       
+        res.status(500).json({"error": "missing restaurant id"});       
     }
 })
 
