@@ -4,14 +4,14 @@
     "author": "LIN, Jiacheng",
     "version": "0.0.1",
     "engines": {
-        "node": "^14.15.1"
+        "node": "18.18.0"
     },
     "dependencies": {
         "cookie-session": "latest",
         "body-parser": "^1.18.3",
         "ejs": "*",
         "express": "*",
-        "mongodb": "*",
+        "mongodb": "StockManagement",
         "assert": "^1.4.1"
         
     },
