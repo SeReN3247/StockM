@@ -3,7 +3,7 @@ const assert = require('assert');
 const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
 
-const mongourl = 'mongodb+srv://KasenLin:Bjklsad123@stockmanagement.otjjmtt.mongodb.net/?retryWrites=true&w=majority'; 
+const mongourl = 'mongodb+srv://KasenLin:kasenlin123@stockmanagement.otjjmtt.mongodb.net/?retryWrites=true&w=majority'; 
 const dbName = 'StockManagement';
 
 const express = require('express');
