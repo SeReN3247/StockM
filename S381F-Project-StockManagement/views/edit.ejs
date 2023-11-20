@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+    label{
+        font-size: 1.5em;
+    }
+    p{
+        font-size: 1.5em;
+    }
+    </style>
+</head>
+<body>
+    <div class="board text-center">
+        <h1>Update Restaurant Information</h1>
+    </div>
+    <form action="/update" method="POST">
+
+    <label for="itemID" value="item.itemID"><b>Item ID*: <%= item.itemID %></b></label><br><br>
+    
+    <input type="hidden" id="postId" name="postId" value="<%= item.itemID %>" />
+     
+    <label for="name"><b>Item Name*:</b></label>
+    <input type="text" id="name" name="name" class="form-control" placeholder="" value= "<% if (item.name) { %><%= item.name %><% } %>" /><br><br>
+                
+    <label for="manufacturer"><b>Manufacturer:</b></label>
+    <input type="text" id="manufacturer" name="manufacturer" class="form-control" placeholder="" value ="<% if (item.manufacturer) { %><%= item.manufacturer %><% } %>" /><br><br>
+    
+    <label for="Manufacturer Contact"><b>Manufacturer Contact:</b></label>
+    <input type="text" id="number" name="number" class="form-control" placeholder="" value ="<% if (item.phone) { %><%= item.phone %><% } %>"/> <br><br>
+                
+    <label for="description"><b>Description:</b></label><br>
+    <textarea name="description" cols="50" rows="10" placeholder="" value = "<% if (item.description) { %><%= item.description %><% } %>" /></textarea><br>
+
+    <input type="submit" value="update">
+</html>
+
