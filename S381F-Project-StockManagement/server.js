@@ -10,12 +10,12 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const session = require('cookie-session');
-const SECRETKEY = 'cs381';
+const SECRETKEY = 'us123';
 
 var usersinfo = new Array(
     {name: "user1", password: "us123"},
     {name: "user2", password: "us123"},
-    {name: "user3", password: "sp987"}
+    {name: "user3", password: "us123"}
 );
 
 var documents = {};
